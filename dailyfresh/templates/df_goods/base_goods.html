@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block head_uname %}
+{{uname}}
+{% endblock head_uname %}
+
+{% block navbar %}
+<div class="subnav_con fl">
+	<h1>全部商品分类</h1>	
+	<span></span>			
+	<ul class="subnav">
+		<li><a href="/list1_1_1/" class="fruit">新鲜水果</a></li>
+		<li><a href="/list2_1_1/" class="seafood">海鲜水产</a></li>
+		<li><a href="/list3_1_1/" class="meet">猪牛羊肉</a></li>
+		<li><a href="/list4_1_1/" class="egg">禽类蛋品</a></li>
+		<li><a href="/list5_1_1/" class="vegetables">新鲜蔬菜</a></li>
+		<li><a href="/list6_1_1/" class="ice">速冻食品</a></li>
+	</ul>
+</div>
+{% endblock navbar %}
+
+{% block body_content %}
+	<div class="breadcrumb">
+		<a href="/">全部分类</a>
+		<span>></span>
+		{% block detail_title %}{% endblock %}
+	</div>
+	
+	{% block detail_goods %}{% endblock %}
+
+	<div class="main_wrap clearfix">
+		<div class="l_wrap fl clearfix">
+			<div class="new_goods">
+				<h3>新品推荐</h3>
+				<ul>
+					{% for g in news %}
+					<li>
+						<a href="/{{g.id}}/"><img src="/static/{{g.gpic}}"></a>
+						{% if g.gtitle|length < 9 %}
+						<h4><a href="/{{g.id}}/">{{g.gtitle}}</a></h4>
+						{% else %}
+						<h4><a href="/{{g.id}}/">{{g.gtitle|slice:'8'}}...</a></h4>
+						{% endif %}
+						<div class="prize">￥ {{g.gprice}}</div>
+					</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+
+		{% block body_content2 %}{% endblock %}
+
+	</div>
+{% endblock body_content %}
+

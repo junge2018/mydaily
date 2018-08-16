@@ -66,7 +66,7 @@ html,body{height:100%}
 
 /* 菜单、幻灯片样式 */
 
-.navbar_con{height:40px;border-bottom:2px solid #39a93e}
+.navbar_con{width:1200px;height:40px;border-bottom:2px solid #39a93e}
 .navbar{width:1200px;margin:0 auto;}
 .navbar h1{width:200px;height:40px;line-height:40px;text-align: center;font-size:14px;color:#fff;background-color:#39a93e;}
 
@@ -277,9 +277,9 @@ html,body{height:100%}
 
 /* 登录页 */
 
-.login_top{width:960px;height:130px;margin:0 auto;}
+.login_top{width:1200px;height:130px;margin:0 auto;}
 .login_logo{display:block;width:193px;height:76px;margin-top:30px;}
-.login_form_bg{height:480px;background-color:#518e17}
+.login_form_bg{width:1200px;height:480px;background-color:#518e17;margin: 0 auto;}
 .no-mp{margin-top:0px;}
 .login_form_wrap{width:960px;height:480px;margin:0 auto;}
 .login_banner{width:381px;height:322px;background:url(../images/login_banner.png) no-repeat;margin-top:90px;}

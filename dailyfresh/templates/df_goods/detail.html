@@ -1,0 +1,114 @@
+{% extends 'df_goods/base_goods.html' %}
+
+{% block head_title %}
+商品详情
+{% endblock head_title %}
+
+{% block head_js %}
+<script type="text/javascript">
+function add() {
+		num = parseFloat($('.num_show').val());
+		$('.num_show').val(num+1);
+		$('.num_show').blur();
+	}
+
+	function minus() {
+		num = parseFloat($('.num_show').val());
+		$('.num_show').val(num-1);
+		$('.num_show').blur();
+	}
+
+$(function(){
+	var $add_x = $('#add_cart').offset().top;
+	var $add_y = $('#add_cart').offset().left;
+
+	var $to_x = $('#show_count').offset().top;
+	var $to_y = $('#show_count').offset().left;
+
+	$(".add_jump").css({'left':$add_y+80,'top':$add_x+10,'display':'block'})
+	$('#add_cart').click(function(){
+		$(".add_jump").stop().animate({
+			'left': $to_y+7,
+			'top': $to_x+7},
+			"fast", function() {
+				$(".add_jump").fadeOut('fast',function(){
+					$('#show_count').html(2);
+				});
+			})
+		});
+
+	$('.num_show').blur(function(){
+		num = parseInt($('.num_show').val());
+		price = parseFloat($('#gprice').text());
+		storge = parseFloat($('#gstorge').attr('value'));
+		$('.num_show').val(num);
+		storge_tem = storge - num;
+		if (num<0) {
+			num = 0.0;
+			total = num*price;
+			$('#gtotal').html(total.toFixed(2)+'元');
+			$('.num_show').val('0')
+		}
+		else {
+			total = num*price;
+			$('#gtotal').html(total.toFixed(2)+'元');
+			$('#gstorge').html(storge_tem.toFixed(0));
+		}
+	});
+
+});
+</script>
+{% endblock head_js %}
+
+{% block detail_title %}
+<a href="/list{{tid}}_1_1/">{{title}}</a>
+<span>></span>
+<a href="/{{id}}/">商品详情</a>
+{% endblock detail_title %}
+
+{% block detail_goods %}
+	<div class="goods_detail_con clearfix">
+		<div class="goods_detail_pic fl"><img src="/static/{{g.gpic}}"></div>
+
+		<div class="goods_detail_list fr">
+			<h3>{{g.gtitle}}</h3>
+			<p>{{g.gdesc}}</p>
+			<div class="prize_bar">
+				<span class="show_pirze">¥<em id="gprice">{{g.gprice}}</em></span>
+				<span class="show_unit">单  位：{{g.gunit}}</span>
+			</div>
+			<div class="goods_num clearfix">
+				<div class="num_name fl">数 量：</div>
+				<div class="num_add fl">
+					<input type="text" class="num_show fl" value="0">
+					<a href="javascript:add();" class="add fr">+</a>
+					<a href="javascript:minus();" class="minus fr">-</a>	
+				</div>
+				<div class="num_name">库存:<em id='gstorge' value='{{g.gstorge}}'>{{g.gstorge}}</em></div> 
+			</div>
+			<div class="total">总价：<em id="gtotal">0.00元</em></div>
+			<div class="operate_btn">
+				<a href="javascript:;" class="buy_btn">立即购买</a>
+				<a href="javascript:;" class="add_cart" id="add_cart">加入购物车</a>				
+			</div>
+		</div>
+	</div>
+{% endblock detail_goods %}
+
+{% block body_content2 %}
+		<div class="r_wrap fr clearfix">
+			<ul class="detail_tab clearfix">
+				<li class="active">商品介绍</li>
+				<li>评论</li>
+			</ul>
+
+			<div class="tab_content">
+				<dl>
+					<dt>商品详情：</dt>
+					<dd>{{g.gcontent|safe}}</dd>
+				</dl>
+			</div>
+
+		</div>
+{% endblock body_content2 %}
+

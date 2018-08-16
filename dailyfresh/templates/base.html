@@ -5,8 +5,6 @@
 	<title>天天生鲜-{% block head_title %}{% endblock %}</title>
 	<link rel="stylesheet" type="text/css" href="/static/df_user/css/reset.css">
 	<link rel="stylesheet" type="text/css" href="/static/df_user/css/main.css">
-	<script type="text/javascript" src='/static/df_user/js/jquery-1.12.4.min.js'></script>
-	{% block head_js %}{% endblock %}
 </head>
 <body>
 	<div class="header_con">
@@ -15,7 +13,7 @@
 			<div class="fr">
 				{% if request.session.user_name|default:"" != "" %}
 				<div class="login_info fl" style="display:block">
-					欢迎您：<em>{% block head_uname %}{% endblock %}</em>
+					欢迎您：<em>{{request.session.user_name}}</em>
 					<span>|</span>
 					<a href="/user/logout/" title="退出">退出</a>
 				</div>
@@ -40,26 +38,30 @@
 
 	<div class="search_bar clearfix">
 		<a href="/" class="logo fl"><img src="/static/df_user/images/logo.png"></a>
-		<div class="sub_page_name fl">|&nbsp;&nbsp;&nbsp;&nbsp;用户中心</div>
-		<div class="search_con fr">
+		<div class="search_con fl">
 			<input type="text" class="input_text fl" name="" placeholder="搜索商品">
 			<input type="button" class="input_btn fr" name="" value="搜索">
-		</div>		
+		</div>
+		<div class="guest_cart fr">
+			<a href="#" class="cart_name fl">我的购物车</a>
+			<div class="goods_count fl" id="show_count">1</div>
+		</div>
 	</div>
 
-	<div class="main_con clearfix">
-		<div class="left_menu_con clearfix">
-			<h3>用户中心</h3>
-			<ul class="list">
-				<li><a href="/user/info/" class="active">· 个人信息</a></li>
-				<li><a href="/user/order/">· 全部订单</a></li>
-				<li><a href="/user/site/">· 收货地址</a></li>
+	<div class="navbar_con">
+		<div class="navbar clearfix">
+			{% block navbar %}{% endblock %}
+			<ul class="navlist fl">
+				<li><a href="/">首页</a></li>
+				<li class="interval">|</li>
+				<li><a href="#">手机生鲜</a></li>
+				<li class="interval">|</li>
+				<li><a href="#">抽奖</a></li>
 			</ul>
 		</div>
-	
-		{% block body_right_content %}{% endblock %}
-
 	</div>
+
+	{% block body_content %}{% endblock %}
 
 	<div class="footer">
 		<div class="foot_link">
@@ -72,8 +74,11 @@
 			<a href="#">友情链接</a>		
 		</div>
 		<p>CopyRight © 2018 湖北天天生鲜信息技术有限公司 All Rights Reserved</p>
-		<p>电话：027-****888    鄂ICP备*******8号</p>
+		<p>电话：027-****888 &nbsp;&nbsp;&nbsp;鄂ICP备*******8号</p>
 	</div>
+
+	<script type="text/javascript" src="/static/df_user/js/jquery-1.12.4.min.js"></script>
+	{% block head_js %}{% endblock %}
 
 </body>
 </html>
