@@ -1,0 +1,39 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>天天生鲜-支付</title>
+		<link rel="stylesheet" type="text/css" href="/static/df_user/css/reset.css">
+		<link rel="stylesheet" type="text/css" href="/static/df_user/css/main.css">
+</head>
+<body>
+
+	<div class="popup_con">
+		<div class="popup">	
+			<p>订单提交成功！</p>
+		</div>
+		<div class="mask"></div>
+	</div>
+	
+	<script type="text/javascript" src="/static/df_user/js/jquery-1.12.4.min.js"></script>
+	<script type="text/javascript">
+		$('.popup_con').fadeIn('normal',function() {
+			setTimeout(function(){
+			$('.popup_con').fadeOut('slow',function(){
+				var status_tem = confirm('确认已付款？');
+				if (status_tem) {
+					location.href = '/order/pay'+{{oid}}+'/';
+					return;
+				}
+				else {
+					location.href = '/cart/';
+					return;
+				}
+			});	
+			},3000)
+		});
+
+	</script>
+</body>
+</html>

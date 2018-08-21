@@ -6,19 +6,40 @@
 
 {% block head_js %}
 <script type="text/javascript">
-function add() {
-		num = parseFloat($('.num_show').val());
-		$('.num_show').val(num+1);
-		$('.num_show').blur();
-	}
 
-	function minus() {
-		num = parseFloat($('.num_show').val());
-		$('.num_show').val(num-1);
-		$('.num_show').blur();
+function total_cal() {
+	num = parseInt($('.num_show').val());
+	price = parseFloat($('#gprice').text());
+	storge = parseFloat($('#gstorge').attr('value'));
+	$('.num_show').val(num);
+	storge_tem = storge - num;
+	if (num<0) {
+		num = 0.0;
+		total = num*price;
+		$('#gtotal').html(total.toFixed(2)+'元');
+		$('.num_show').val('0')
 	}
+	else {
+		total = num*price;
+		$('#gtotal').html(total.toFixed(2)+'元');
+		$('#gstorge').html(storge_tem.toFixed(0));
+	}
+}
+
+function add() {
+	num = parseFloat($('.num_show').val());
+	$('.num_show').val(num+1);
+	$('.num_show').blur();
+}
+
+function minus() {
+	num = parseFloat($('.num_show').val());
+	$('.num_show').val(num-1);
+	$('.num_show').blur();
+}
 
 $(function(){
+	total_cal();
 	var $add_x = $('#add_cart').offset().top;
 	var $add_y = $('#add_cart').offset().left;
 
@@ -27,33 +48,35 @@ $(function(){
 
 	$(".add_jump").css({'left':$add_y+80,'top':$add_x+10,'display':'block'})
 	$('#add_cart').click(function(){
+		// 判断是否登录,indexOf未找到返回-1,找到返回索引值
+		if ($('.login_but').text().indexOf('登录')>=0) {
+			var con = confirm('请先登录后购买')
+			if (con == true) {
+				location.href = '/user/login/'
+				return;
+			}
+			else {
+				return;
+			}
+		}
+		// 页面执行加入购物车动画
 		$(".add_jump").stop().animate({
 			'left': $to_y+7,
 			'top': $to_x+7},
-			"fast", function() {
-				$(".add_jump").fadeOut('fast',function(){
-					$('#show_count').html(2);
-				});
-			})
-		});
+			"slow", function() {
+				$(".add_jump").fadeOut('slow');
+			});
 
-	$('.num_show').blur(function(){
+		// 异步，请求添加购物车内商品种类
 		num = parseInt($('.num_show').val());
-		price = parseFloat($('#gprice').text());
-		storge = parseFloat($('#gstorge').attr('value'));
-		$('.num_show').val(num);
-		storge_tem = storge - num;
-		if (num<0) {
-			num = 0.0;
-			total = num*price;
-			$('#gtotal').html(total.toFixed(2)+'元');
-			$('.num_show').val('0')
-		}
-		else {
-			total = num*price;
-			$('#gtotal').html(total.toFixed(2)+'元');
-			$('#gstorge').html(storge_tem.toFixed(0));
-		}
+		$.get('/cart/add{{g.id}}_'+num+'/',function(da){
+			$('#show_count').html(da.count_type);
+		});
+	});
+
+	// 详情页面购物车数量和此物品价格
+	$('.num_show').blur(function(){
+		total_cal();
 	});
 
 });
@@ -72,7 +95,13 @@ $(function(){
 
 		<div class="goods_detail_list fr">
 			<h3>{{g.gtitle}}</h3>
-			<p>{{g.gdesc}}</p>
+			<p>
+			{% if g.gdesc|length < 179 %}
+			{{g.gdesc}}
+			{% else %}
+			{{g.gdesc|slice:'178'}}...
+			{% endif %}
+			</p>
 			<div class="prize_bar">
 				<span class="show_pirze">¥<em id="gprice">{{g.gprice}}</em></span>
 				<span class="show_unit">单  位：{{g.gunit}}</span>
@@ -80,7 +109,7 @@ $(function(){
 			<div class="goods_num clearfix">
 				<div class="num_name fl">数 量：</div>
 				<div class="num_add fl">
-					<input type="text" class="num_show fl" value="0">
+					<input type="text" class="num_show fl" value="1">
 					<a href="javascript:add();" class="add fr">+</a>
 					<a href="javascript:minus();" class="minus fr">-</a>	
 				</div>
@@ -110,5 +139,7 @@ $(function(){
 			</div>
 
 		</div>
+		<div class="add_jump"></div> 
+		<!-- 加入购物车小动画，圆点移动 -->
 {% endblock body_content2 %}
 

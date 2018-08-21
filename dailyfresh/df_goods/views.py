@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect
 
 # from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from models import *
+from df_cart.models import *
 from django.core.paginator import Paginator, Page
 
 def index(request):
@@ -22,17 +23,32 @@ def index(request):
 	type41 = typelist[4].goods_info_set.order_by('-gclick_num')[0:4]
 	type5 = typelist[5].goods_info_set.order_by('-id')[0:4]
 	type51 = typelist[5].goods_info_set.order_by('-gclick_num')[0:4]
+	
+	# if request.session.has_key('user_id'):
+	# 	uid = request.session['user_id']
+	# 	cart_count = Cart_info.objects.filter(user_id=uid).count()
+	# else:
+	# 	cart_count = 0
+
 	context = {	'type0':type0, 'type01':type01,
 				'type1':type1, 'type11':type11,
 				'type2':type2, 'type21':type21,
 				'type3':type3, 'type31':type31,
 				'type4':type4, 'type41':type41,
-				'type5':type5, 'type51':type51,}
+				'type5':type5, 'type51':type51,
+				'cart_count':cart_count(request)}
 	return render(request, 'df_goods/index.html', context)
 
 
 def list(request, tid, pindex, sort):
 	typeinfo = Type_info.objects.get(id=int(tid))
+
+	# if request.session.has_key('user_id'):
+	# 	uid = request.session['user_id']
+	# 	cart_count = Cart_info.objects.filter(user_id=uid).count()
+	# else:
+	# 	cart_count = 0
+
 	news = typeinfo.goods_info_set.order_by('-id')[0:2]
 	if sort == '1':   # 默认排序，最新
 		good_list = Goods_info.objects.filter(gtype_id=int(tid)).order_by('-id')
@@ -50,15 +66,26 @@ def list(request, tid, pindex, sort):
 				'tid':tid,
 				'pindex':pindex,
 				'sort':sort,
-				'news':news,}
+				'news':news,
+				'cart_count':cart_count(request)}
 	return render(request, 'df_goods/list.html', context)
 
 def detail(request, id):
 	goods = Goods_info.objects.get(id=int(id))
+
+	# if request.session.has_key('user_id'):
+	# 	uid = request.session['user_id']
+	# 	cart_count = Cart_info.objects.filter(user_id=uid).count()
+	# else:
+	# 	cart_count = 0
+
 	goods.gclick_num += 1
 	goods.save()
 	news = goods.gtype.goods_info_set.order_by('-id')[0:2]
-	context = {'g':goods, 'news':news, 'id':id, 'title':goods.gtype.ttitle, 'tid':goods.gtype.id}
+	context = {'g':goods, 'news':news, 'id':id, 
+				'title':goods.gtype.ttitle, 
+				'tid':goods.gtype.id,
+				'cart_count':cart_count(request)}
 	response = render(request, 'df_goods/detail.html', context)
 
 	#记录最近浏览的产品，在用户中心使用
@@ -78,5 +105,22 @@ def detail(request, id):
 	response.set_cookie('goods_ids', goods_ids)  #存入detail页面的cookie
 	return response
 
+# 购物车数量
+def cart_count(request):
+	if request.session.has_key('user_id'):
+		uid = request.session['user_id']
+		count_tem = Cart_info.objects.filter(user_id=uid).count()
+		return count_tem
+	else:
+		return 0
+
+# 搜索框内搜索调用类及类方法,此法改写了原来include('haystack.urls')的内容
+from haystack.views import SearchView
+class MySearchView(SearchView):
+	def extra_context(self):
+		context = super(MySearchView, self).extra_context()
+		context['cart_count']=cart_count(self.request)
+		# 传参数到网页的cart_count，便于网页使用数据
+		return context
 
 

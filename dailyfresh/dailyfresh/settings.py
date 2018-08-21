@@ -24,9 +24,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '^jj!46f^j%v#l+au9!n!dk*td@y$8!#70!g9chcc4%k)ub&o2d'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -41,7 +41,9 @@ INSTALLED_APPS = (
     'df_user',
     'df_goods',
     'df_cart',
-    'tinymce',
+    'df_order',
+    'tinymce',   # 添加富文本框应用便于编辑
+    'haystack',   # 添加中英文搜索应用引擎
 )
 
 MIDDLEWARE_CLASSES = (
@@ -123,3 +125,17 @@ TINYMCE_DEFAULT_CONFIG = {
     'height': 400,
 }
 
+# 中英文搜索引擎haystack
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        # 使用whoosh搜索引擎
+        'ENGINE': 'haystack.backends.whoosh_cn_backend.WhooshEngine',
+        # 索引文件路径
+        'PATH': os.path.join(BASE_DIR, 'whoosh_index'),
+    }
+}
+# 当添加，修改，删除数据时，自动生成索引
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+HAYSTACK_DEFAULT_OPERATOR = 'OR'
+# 每页显示18条数据信息
+HAYSTACK_SEARCH_RUSULTS_PER_PAGE = 18

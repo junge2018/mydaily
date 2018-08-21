@@ -13,7 +13,7 @@
 			<div class="fr">
 				{% if request.session.user_name|default:"" != "" %}
 				<div class="login_info fl" style="display:block">
-					欢迎您：<em>{% block head_uname %}{% endblock %}</em>
+					欢迎您：<em>{{request.session.user_name}}</em>
 					<span>|</span>
 					<a href="/user/logout/" title="退出">退出</a>
 				</div>
@@ -38,7 +38,7 @@
 
 	<div class="search_bar clearfix">
 		<a href="/" class="logo fl"><img src="/static/df_user/images/logo.png"></a>
-		<div class="sub_page_name fl">|&nbsp;&nbsp;&nbsp;&nbsp;用户中心</div>
+		<div class="sub_page_name fl">|&nbsp;&nbsp;&nbsp;&nbsp;{% block head_name %}{% endblock head_name %}</div>
 		<div class="search_con fr">
 			<form method='get' action="/search/" target="_blank">
 				<input type="text" class="input_text fl" name="q" placeholder="搜索商品">
@@ -47,21 +47,9 @@
 		</div>		
 	</div>
 
-	<div class="main_con clearfix">
-		<div class="left_menu_con clearfix">
-			<h3>用户中心</h3>
-			<ul class="list">
-				<li><a href="/user/info/" class="active">· 个人信息</a></li>
-				<li><a href="/user/order/">· 全部订单</a></li>
-				<li><a href="/user/site/">· 收货地址</a></li>
-			</ul>
-		</div>
-	
-		{% block body_right_content %}{% endblock %}
+{% block body_content %}{% endblock %}
 
-	</div>
-
-	<div class="footer">
+		<div class="footer">
 		<div class="foot_link">
 			<a href="#">关于我们</a>
 			<span>|</span>

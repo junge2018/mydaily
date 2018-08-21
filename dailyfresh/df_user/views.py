@@ -4,11 +4,13 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from hashlib import sha1
 from models import *
 from datetime import *
+from django.core.paginator import Paginator,Page
 
 from . import user_decorator
 # import user_decorator
-
+from df_user.models import *
 from df_goods.models import *
+from df_order.models import *
 
 # Create your views here.
 
@@ -117,8 +119,17 @@ def info(request):
 		return redirect('/user/login/')
 
 @user_decorator.login
-def order(request):
-	context = {'uname':request.session['user_name'], 'date_time':datetime.now(), }
+def order(request, pindex):
+	if pindex == '':
+		pindex = '1'
+
+	order_list = Order_info.objects.filter(user_id=request.session['user_id']).order_by('-oid')
+	paginator_page = Paginator(order_list,2)
+	page_num = paginator_page.page(int(pindex))
+
+	context = {'uname':request.session['user_name'],
+				'paginator_page':paginator_page, 
+				'page_num':page_num, }
 	return render(request, 'df_user/user_center_order.html', context)
 
 @user_decorator.login

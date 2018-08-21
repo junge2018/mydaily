@@ -21,3 +21,6 @@ class User_info(models.Model):
 	utest1 = models.CharField(max_length=100, null=True,)
 	class Meta():
 		db_table = "dailyfresh_table"
+
+	def __str__(self):
+		return self.uname.encode('utf-8')
